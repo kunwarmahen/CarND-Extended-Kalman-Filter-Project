@@ -39,7 +39,7 @@ void KalmanFilter::Update(const VectorXd &z) {
 
 	//new estimate
 	x_ = x_ + (K * y);
-	long x_size = x_.size();
+	int x_size = x_.size();
 	MatrixXd I = MatrixXd::Identity(x_size, x_size);
 	P_ = (I - K * H_) * P_;
 }
@@ -47,13 +47,13 @@ void KalmanFilter::Update(const VectorXd &z) {
 void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
 	Tools tools;
+	
 	VectorXd h = tools.CalculateHofX(x_);		
 	VectorXd y = z - h;
 
-	y[1] = tools.constrainAngle(y[1]);
+	y[1] = tools.checkPIValue(y[1]);
 
 	H_ = tools.CalculateJacobian(x_);
-	
 	MatrixXd Ht = H_.transpose();
 	MatrixXd S = H_ * P_ * Ht + R_;
 	MatrixXd Si = S.inverse();
@@ -62,10 +62,7 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
 
 	//new estimate
 	x_ = x_ + (K * y);
-	long x_size = x_.size();
+	int x_size = x_.size();
 	MatrixXd I = MatrixXd::Identity(x_size, x_size);
 	P_ = (I - K * H_) * P_;
-
-	std::cout << "After Update Hj_ = " << H_ << std::endl;
-
 }

@@ -28,7 +28,7 @@ public:
 
   Eigen::VectorXd CalculateHofX(const Eigen::VectorXd& x_state);
 
-  double constrainAngle(double x);
+  double checkPIValue(double x);
 
   void printDimension(Eigen::MatrixXd x);
 
